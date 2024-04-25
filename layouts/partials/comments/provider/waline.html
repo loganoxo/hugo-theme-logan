@@ -34,9 +34,12 @@
     {{- end -}}
     <script>
       /// Waline client configuration see: https://waline.js.org/en/reference/client.html
-      function WalineCallback(){
-              Waline.init({{ $config | jsonify | safeJS }});
+      function WalineCallback() {
+        document.addEventListener("readystatechange", () => {
+          if (document.readyState === "interactive" || document.readyState === "complete") {
+            Waline.init({{ $config | jsonify | safeJS }});
+          }
+        })
       }
-      
     </script>
 {{- end -}}
