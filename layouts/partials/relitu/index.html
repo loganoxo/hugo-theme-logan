@@ -1,0 +1,230 @@
+<!-- 定制化js;https://echarts.apache.org/zh/builder.html -->
+{{- partial "helper/external" (dict "Context" . "Namespace" "Echarts") -}}
+<div id="heatmap" style="
+      max-width: 90%;
+      height: 200px;
+      padding: 2px;
+      text-align: center;
+      margin: auto;
+      "
+></div>
+<script type="text/javascript">
+    var chartDom = document.getElementById('heatmap');
+    var myChart = echarts.init(chartDom);
+    window.addEventListener('resize', function () {
+        myChart.resize();
+    });
+    var option;
+    var dataMap = new Map();
+    {{range((where .Site.RegularPages "Type" "in" .Site.Params.mainSections))}}
+    var key = {{ .Date.Format "2006-01-02"}};
+    var value = dataMap.get(key);
+    var wordCount = {{ .WordCount}};
+    var link = {{ .RelPermalink}};
+    var title = {{ .Title}};
+
+    // multiple posts in same day
+    if (value == null) {
+        dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+        value.push({wordCount, link, title});
+    }
+    {{- end -}}
+
+    var data = [];
+    // sum up the word count
+    for (const [key, value] of dataMap.entries()) {
+        var sum = 0;
+        for (const v of value) {
+            sum += v.wordCount;
+        }
+        data.push([key, (sum / 1000).toFixed(1)]);
+    }
+
+    var startDate = new Date();
+    var year_Mill = startDate.setFullYear((startDate.getFullYear() - 1));
+    var startDate = +new Date(year_Mill);
+    var endDate = +new Date();
+
+    var dayTime = 3600 * 24 * 1000;
+    startDate = echarts.time.format(startDate, '{yyyy}-{MM}-{dd}');
+    endDate = echarts.time.format(endDate, '{yyyy}-{MM}-{dd}');
+
+    // change date range according to months we want to render
+    function heatmap_width(months) {
+        var startDate = new Date();
+        var mill = startDate.setMonth((startDate.getMonth() - months));
+        var endDate = +new Date();
+        startDate = +new Date(mill);
+
+        endDate = echarts.time.format(endDate, '{yyyy}-{MM}-{dd}');
+        startDate = echarts.time.format(startDate, '{yyyy}-{MM}-{dd}');
+
+        var showmonth = [];
+        showmonth.push([
+            startDate,
+            endDate
+        ]);
+        return showmonth
+    };
+
+    function getRangeArr() {
+        const windowWidth = window.innerWidth;
+        if (windowWidth >= 600) {
+            return heatmap_width(12);
+        } else if (windowWidth >= 400) {
+            return heatmap_width(9);
+        } else {
+            return heatmap_width(6);
+        }
+    }
+
+    // 检测浏览器主题模式并选择颜色方案
+    // var prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // 定义明亮模式下的颜色方案
+    const lightTheme = {
+        itemborderColor: '#fff',
+        tooltipcolor: '#7aa8744c',
+        fangkuaicolor: '#F1F1F1',
+        gaoliangcolor: ['#7aa8744c', '#7AA874'],
+        riqiColor: '#999',
+        textbrcolor: '#FFF',
+        xiankuangcolor: 'rgba(0, 0, 0, 0.0)',
+        titlecolor: '#282325',
+    };
+
+    // 定义暗黑模式下的颜色方案
+    const darkTheme = {
+        itemborderColor: '#443f3f',
+        tooltipcolor: '#bd8463',
+        fangkuaicolor: 'rgba(88,89,89,0.5)',
+        gaoliangcolor: ['#b25f2f'],
+        riqiColor: '#b9b6b6',
+        textbrcolor: '#332D2F',
+        xiankuangcolor: 'rgba(0, 0, 0, 0.0)',
+        titlecolor: 'rgba(255, 255, 255, 0.9)',
+    };
+
+    // 根据浏览器主题模式选择当前主题
+    currentTheme = document.documentElement.dataset.scheme === "light" ? lightTheme : darkTheme;
+
+
+    var option;
+
+    function getOption() {
+        option = {
+            title: {
+                top: 0,
+                left: 'center',
+                text: '博客废话产量',
+                textStyle: {
+                    //文字颜色
+                    color: currentTheme.riqiColor,
+                    //字体风格,'normal','italic','oblique'
+                    fontStyle: 'normal',
+                    //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
+                    fontWeight: 'normal',
+                    //字体系列
+                    fontFamily: '"LXGW WenKai Mono Screen", sans-serif',
+                    //字体大小
+                    fontSize: 12
+                }
+            },
+            tooltip: {
+                hideDelay: 1000,
+                enterable: true,
+                borderColor: '#9f9e9e',
+                borderRadius: 20,
+                borderWidth: 0,
+                backgroundColor: currentTheme.tooltipcolor,
+                formatter: function (p) {
+                    const date = p.data[0];
+                    const posts = dataMap.get(date);
+                    var content = `${date}`;
+                    for (const [i, post] of posts.entries()) {
+                        content += "<br>";
+                        var link = post.link;
+                        var title = post.title;
+                        var wordCount = (post.wordCount / 1000).toFixed(1);
+                        content += `<a href="${link}" target="_blank" class="my_tooltips">${title} | ${wordCount} 千字</a>`
+                    }
+                    return content;
+                }
+            },
+            visualMap: {
+                min: 0,
+                max: 10,
+                type: 'piecewise',
+                orient: 'horizontal',
+                left: 'center',
+                top: 30,
+                inRange: {
+                    color: currentTheme.gaoliangcolor
+                },
+                splitNumber: 4,
+                text: ['千字', ''],
+                showLabel: true,
+                itemGap: 20,
+                textStyle: {
+                    color: currentTheme.riqiColor,
+                    fontFamily: '"LXGW WenKai Mono Screen", sans-serif',
+                }
+            },
+            calendar: {
+                top: 80,
+                left: 20,
+                right: 4,
+                cellSize: ['auto', 12],
+                range: getRangeArr(),
+                itemStyle: {
+                    color: currentTheme.fangkuaicolor,
+                    borderColor: currentTheme.itemborderColor,
+                    borderWidth: 2.5,
+
+                },
+                yearLabel: {show: false},
+                monthLabel: {
+                    nameMap: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    color: currentTheme.riqiColor,
+                    fontFamily: '"LXGW WenKai Mono Screen", sans-serif',
+                },
+                dayLabel: {
+                    firstDay: 1,
+                    nameMap: ['日', '一', '', '三', '', '五', ''],
+                    color: currentTheme.riqiColor,
+                    fontFamily: '"LXGW WenKai Mono Screen", sans-serif',
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: currentTheme.xiankuangcolor,
+                    }
+                }
+            },
+            series: {
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
+                data: data,
+            }
+        };
+    }
+
+    getOption();
+    myChart.setOption(option);
+    myChart.on('click', function (params) {
+        if (params.componentType === 'series') {
+            // open the first post on the day
+            const post = dataMap.get(params.data[0])[0];
+            const link = window.location.origin + post.link;
+            window.open(link, '_blank').focus();
+        }
+    });
+    window.addEventListener("onColorSchemeChange", (colorScheme) => {
+        /*颜色变化了*/
+        currentTheme = colorScheme.detail === "light" ? lightTheme : darkTheme;
+        getOption();
+        myChart.setOption(option);
+    });
+    // toggleDark.addEventListener('click', () => {
+    //   
+    // });
+</script>

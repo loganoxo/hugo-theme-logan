@@ -1,0 +1,20 @@
+<!--顶部进度条 -->
+{{ if (.Site.Params.nprogress) }}
+    {{ partial "nprogress/nprogress.html" . }}
+{{ end }}
+
+<script>
+    <!-- 给所有img 加 decoding -->
+
+    // 获取所有的 img 元素
+    let images_for_add_decoding = document.getElementsByTagName('img');
+
+    // 遍历所有的 img 元素，并为它们添加 decoding 属性
+    for (let inn = 0; inn < images_for_add_decoding.length; inn++) {
+        if (!images_for_add_decoding[inn].hasAttribute('decoding')) {
+            images_for_add_decoding[inn].setAttribute('decoding', 'async');
+        }
+    }
+
+
+</script>

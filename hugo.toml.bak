@@ -1,0 +1,7 @@
+baseURL = 'https://example.org/'
+#languageCode = 'en-us'
+title = 'Logan Blog'
+description = '秦贺的博客'
+DefaultContentLanguage = 'zh-cn'
+languageCode = 'zh-cn'
+timeZone = 'Asia/Shanghai'

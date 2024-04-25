@@ -1,0 +1,6 @@
+{{- $scope := default "homepage" .Scope -}}
+{{- $context := .Context -}}
+<aside class="sidebar">
+  {{- $params := default dict .params -}}
+  {{ partial  "widget/toc" (dict "Context" $context "Params" $params) }}
+</aside>

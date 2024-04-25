@@ -1,0 +1,56 @@
+<!--   添加所有页面共用的，并且不会阻塞页面加载的脚本(async脚本，css不会阻塞)      -->
+<!--google-seo-验证-->
+<meta name="google-site-verification" content="{{.Site.Params.googleSiteVerification}}"/>
+<!--字体-->
+{{- partial "helper/external" (dict "Context" . "Namespace" "WenKai") -}}
+
+<!-- busuanzi -->
+{{- if .Site.Params.busuanzi.enable -}}
+    {{- partial "helper/external" (dict "Context" . "Namespace" "BSZ") -}}
+	<meta name="referrer" content="no-referrer-when-downgrade">
+{{- end -}}
+
+<!-- 添加彩虹背景 -->
+{{- partial "helper/external" (dict "Context" . "Namespace" "Ribbon") -}}
+
+
+<!-- 添加樱花雨 -->
+{{- partial "helper/external" (dict "Context" . "Namespace" "Yzhanweather") -}}
+
+
+
+
+
+<script>
+    // 定义一个函数，用于执行callback
+    function loadScript(src_rel, callback) {
+        var externalScript = document.querySelector('script[src="' + src_rel + '"]');
+
+        // 定义一个变量，用于标记脚本是否已经加载成功
+        var scriptLoaded = false;
+
+        // chrome使用 onload 事件监听脚本加载成功
+        externalScript.onload = function () {
+            // 确保操作仅执行一次
+            if (!scriptLoaded) {
+                scriptLoaded = true;
+                // 执行回调函数，如果有的话
+                if (callback) {
+                    window[callback]();
+                }
+            }
+        };
+
+        // IE使用 onreadystatechange 事件监听脚本加载状态
+        externalScript.onreadystatechange = function () {
+            if (!scriptLoaded && (externalScript.readyState === 'loaded' || externalScript.readyState === 'complete')) {
+                // 确保操作仅执行一次
+                scriptLoaded = true;
+                // 执行回调函数，如果有的话
+                if (callback) {
+                    window[callback]();
+                }
+            }
+        };
+    }
+</script>

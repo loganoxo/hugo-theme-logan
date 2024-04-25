@@ -1,0 +1,140 @@
+{{/* 顶部进度条 */}}
+{{- partial "helper/external" (dict "Context" . "Namespace" "Nprogress") -}}
+<div class="top-scroll-bar"></div>
+<style>
+    .top-scroll-bar, .page-load-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        display: none;
+        width: 0;
+        height: 4px;
+        border-radius: 5px;
+        background-image: linear-gradient(to right, #5a0ca6 0%, rgba(208, 114, 155, 0.84) 50%, #29d 100%);
+
+        [data-scheme="light"] & {
+            background-image: linear-gradient(to right, #78ee6e 0%, #5069e3 50%, #29d 100%);
+        }
+    }
+
+    #nprogress {
+        pointer-events: none;
+    }
+
+    #nprogress .my_bar {
+        background-image: linear-gradient(to right, #5a0ca6 0%, rgba(208, 114, 155, 0.84) 50%, #29d 100%);
+
+        [data-scheme="light"] & {
+            background-image: linear-gradient(to right, #78ee6e 0%, #5069e3 50%, #29d 100%);
+        }
+
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        border-radius: 10px;
+        width: 100%;
+        height: 5px;
+    }
+
+    /* Fancy blur effect */
+    #nprogress .my_peg {
+        display: block;
+        position: absolute;
+        right: 0px;
+        width: 100px;
+        height: 100%;
+        box-shadow: 0 0 10px #29d, 0 0 5px #29d;
+        opacity: 1.0;
+
+        -webkit-transform: rotate(3deg) translate(0px, -4px);
+        -ms-transform: rotate(3deg) translate(0px, -4px);
+        transform: rotate(3deg) translate(0px, -4px);
+    }
+
+    /* Remove these to get rid of the spinner */
+    #nprogress .my_spinner {
+        display: block;
+        position: fixed;
+        z-index: 1031;
+        top: 15px;
+        right: 15px;
+    }
+
+    #nprogress .my_spinner-icon {
+        width: 25px;
+        height: 25px;
+        box-sizing: border-box;
+
+        border: solid 3px transparent;
+        border-top-color: #29d;
+        border-left-color: #29d;
+        border-radius: 50%;
+
+        -webkit-animation: nprogress-spinner 400ms linear infinite;
+        animation: nprogress-spinner 400ms linear infinite;
+    }
+
+    .nprogress-custom-parent {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .nprogress-custom-parent #nprogress .my_spinner,
+    .nprogress-custom-parent #nprogress .my_bar {
+        position: absolute;
+    }
+
+    @-webkit-keyframes nprogress-spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes nprogress-spinner {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+</style>
+
+<script>
+    var my_template = '<div class="my_bar" role="bar"><div class="my_peg"></div></div><div class="my_spinner" role="spinner"><div class="my_spinner-icon"></div></div>';
+    // 顶部进度条
+    NProgress.configure({
+        template: my_template
+    });
+    NProgress.start();
+    document.addEventListener("readystatechange", () => {
+        // 页面加载进度条
+        if (document.readyState === "interactive") NProgress.inc(0.6);
+        if (document.readyState === "complete") {
+            NProgress.done(true);
+            NProgress.configure({
+                template: my_template,
+                minimum: 0.0,
+                trickle: false,
+                showSpinner: false
+            });
+            
+            // 顶部阅读进度条
+            var progressBar = document.querySelector(".top-scroll-bar");
+            window.addEventListener("scroll", function () {
+                var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                var progress = (scrollTop / scrollHeight) * 100;
+                progressBar.style.width = progress + "%";
+                progressBar.style.display = "block";
+            });
+        }
+    });
+</script>
+

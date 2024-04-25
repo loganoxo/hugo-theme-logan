@@ -1,0 +1,136 @@
+<!--返回顶部按钮 -->
+<a href="#" class="right_things" id="back-to-top" title="返回顶部"></a>
+<!--返回顶部CSS -->
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    #back-to-top {
+        z-index: 998 !important;
+        transition: 1.5s ease, opacity 2s ease, visibility 2s ease, right 0.8s ease;
+        opacity: 0;
+        display: inline-block;
+        visibility: hidden;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        width: 55px;
+        height: 55px;
+        font-size: 30px;
+        text-align: center;
+        line-height: 50px;
+        border-radius: 20px;
+        box-shadow: var(--shadow-l1);
+        cursor: pointer;
+        color: var(--body-text-color);
+        background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
+
+        [data-scheme="dark"] & {
+            background-image: linear-gradient(45deg, #8baaaa 0%, #ae8b9c 100%);
+        }
+    }
+
+    #back-to-top:before {
+        content: ' ';
+        display: inline-block;
+        position: relative;
+        top: 0;
+        transform: rotate(135deg);
+        height: 10px;
+        width: 10px;
+        border-width: 0 0 2px 2px;
+        border-color: var(--back-to-top-color);
+        border-style: solid;
+    }
+
+    #back-to-top:hover {
+        transform: scale(1.1, 1.1);
+        background-image: linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%);
+
+        [data-scheme="dark"] & {
+            background-image: linear-gradient(-20deg, #a5a9d9 0%, #99c99c 100%);
+        }
+    }
+
+    #back-to-top:hover:before {
+        border-color: #2674e0;
+    }
+
+    /* 在屏幕宽度小于 768 像素时，钮位置调整 */
+    @media screen and (max-width: 768px) {
+        #back-to-top {
+            width: 35px;
+            height: 35px;
+            font-size: 10px;
+            right: 15px;
+        }
+    }
+</style>
+
+<!--返回顶部JS -->
+<script>
+
+    function resizeRight() {
+        /*和目录一起平移*/
+        var rightElements = document.querySelectorAll('.right_things');
+        var windowWidth = window.innerWidth;
+        if (rightElements.length > 0) {
+            // 遍历并操作元素
+            rightElements.forEach(function (element) {
+                // 在这里对每个元素进行操作
+                if (windowWidth > 2100) {
+                    element.style.right = '280px';
+                } else if (windowWidth > 1800) {
+                    element.style.right = '120px';
+                } else if (windowWidth < 1800) {
+                    element.style.right = '10px';
+                }
+            });
+        }
+    }
+
+    window.addEventListener('resize', function () {
+        requestAnimationFrame(resizeRight);
+    });
+
+    function backToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+
+    window.onload = function () {
+        requestAnimationFrame(resizeRight);
+        var scrollTop =
+            this.document.documentElement.scrollTop || this.document.body.scrollTop
+        var totopBtn = this.document.getElementById('back-to-top')
+        if (scrollTop > 0) {
+            totopBtn.style.visibility = 'visible';
+            totopBtn.style.opacity = '1'
+        } else {
+            totopBtn.style.opacity = '0'
+            totopBtn.style.visibility = 'hidden';
+        }
+    }
+
+    window.onscroll = function () {
+        var scrollTop =
+            this.document.documentElement.scrollTop || this.document.body.scrollTop
+        var totopBtn = this.document.getElementById('back-to-top')
+        if (scrollTop < 400) {
+            totopBtn.style.opacity = '0'
+            totopBtn.style.visibility = 'hidden';
+        } else {
+            totopBtn.style.visibility = 'visible';
+            totopBtn.style.opacity = '1'
+            totopBtn.addEventListener('click', backToTop, false)
+        }
+    }
+
+</script>
+
+
+

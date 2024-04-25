@@ -1,0 +1,117 @@
+{{- partial "helper/external" (dict "Context" . "Namespace" "Waterfall") -}}
+{{- with $.Inner }}
+	<gallery>
+    {{ . }}
+	</gallery>
+{{- end }}
+<style>
+    .gallery-photos {
+        width: 100%;
+    }
+
+    .gallery-photo {
+        width: 24.9%;
+        position: relative;
+        visibility: hidden;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .gallery-photo.visible {
+        visibility: visible;
+        animation: fadeIn 2s;
+    }
+
+    .gallery-photo img {
+        display: block;
+        width: 100%;
+        border-radius: 20px;
+        padding: 6px;
+        cursor: pointer;
+        animation: fadeIn 1s;
+        transition: all .4s ease-in-out;
+    }
+
+    .gallery-photo:hover img {
+        transform: scale(1.1);
+    }
+
+    @media screen and (max-width: 1800px) {
+        .gallery-photo {
+            width: 33.3%;
+        }
+    }
+
+    @media screen and (max-width: 860px) {
+        .gallery-photo {
+            width: 49.9%;
+        }
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+</style>
+<script>
+
+    function WaterfallCallback() {
+
+    }
+
+    function ImgStatusCallback() {
+
+    }
+
+    function ViewImageCallback() {
+
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        //外链 gallery 标签相册瀑布流
+        var photosAll = document.getElementsByTagName('gallery') || '';
+        if (photosAll) {
+            for (var i = 0; i < photosAll.length; i++) {
+                photosAll[i].innerHTML = '<div class="gallery-photos">' + photosAll[i].innerHTML + '</div>'
+                var photosIMG = photosAll[i].getElementsByTagName('img')
+                for (var j = 0; j < photosIMG.length; j++) {
+                    wrap(photosIMG[j], document.createElement('div'));
+                }
+            }
+        }
+
+        function wrap(el, wrapper) {
+            wrapper.className = "gallery-photo";
+            el.parentNode.insertBefore(wrapper, el);
+            wrapper.appendChild(el);
+        }
+
+        //相册瀑布流
+        let galleryPhotos = document.querySelectorAll('.gallery-photos') || ''
+        if (galleryPhotos) {
+            (new ImgStatus).watch('.gallery-photo img', function (imgs) {
+                if (imgs.isDone()) {
+                    for (var i = 0; i < galleryPhotos.length; i++) {
+                        waterfall(galleryPhotos[i]);
+                        let pagePhoto = galleryPhotos[i].querySelectorAll('.gallery-photo');
+                        for (var j = 0; j < pagePhoto.length; j++) {
+                            pagePhoto[j].className += " visible"
+                        }
+                        ;
+                    }
+                }
+            });
+            window.addEventListener('resize', function () {
+                for (var i = 0; i < galleryPhotos.length; i++) {
+                    waterfall(galleryPhotos[i]);
+                }
+            });
+        }
+        window.ViewImage && ViewImage.init('.gallery-photo img')
+    });
+</script>

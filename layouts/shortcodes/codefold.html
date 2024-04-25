@@ -1,0 +1,52 @@
+<!-- 折叠代码 -->
+<details class="codefold">
+
+  <summary class="codefold__title">
+        <span class="codefold__title-text">
+            " {{ with .Get 0}}{{.}}{{else}}click to expand{{ end }} "
+        </span>
+  </summary>
+  {{ .Inner }}
+
+</details>
+
+<!-- 样式 -->
+<style>
+  .codefold {
+    margin: 2em 0em;
+    /* overflow: hidden; */
+    /*background-color: rgba(248, 240, 219, 0.98);*/
+    border-radius: 20px;
+  }
+
+  .codefold__title {
+    margin: 1em 0em;
+    padding: 0.5em 1em;
+    border: 1px solid #e9edf3;
+    cursor: pointer;
+    user-select: none;
+    /*background-color: rgba(248, 240, 219, 0.98);*/
+    border-radius: 20px;
+  }
+
+  .codefold__title-text {
+    flex: 1;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: rgb(215, 178, 130);
+    text-decoration: 2px underline;
+  }
+
+  .codefold_tip {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #6280ad;
+  }
+</style>
+
+<!-- 
+    使用格式
+    双花括号 小于号 codefold 标题 大于号 双花括号
+    代码
+    双花括号 小于号 /codefold 大于号 双花括号
+ -->

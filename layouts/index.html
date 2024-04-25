@@ -1,0 +1,39 @@
+{{ define "main" }}
+    {{- partial "helper/external" (dict "Context" . "Namespace" "PhotoSwipe") -}}
+    {{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
+    {{ $notHidden := where .Site.RegularPages "Params.hidden" "!=" true }}
+    {{ $filtered := ($pages | intersect $notHidden) }}
+    {{ $pag := .Paginate ($filtered) }}
+
+    <section class="article-list">
+      <!-- 首页欢迎字幅 -->
+      <div class="welcome">
+        <p style="font-size: 2rem; text-align: center; font-weight: bold">
+          <span class="shake">👋</span>
+          <span class="jump-text1" style="padding-right: 0.8rem">Welcome</span><!--
+          --><span class="jump-text2" style="padding-right: 0.8rem">To</span><!--
+          --><span class="jump-text3" style="color:#e99312">L</span><span class="jump-text4"
+                                                                          style="color:#e99312">og</span><span
+            class="jump-text5" style="color:#e99312">a</span><span class="jump-text6"
+                                                                   style="color:#e99312">n</span><span
+            class="jump-text7" style="color:#e99312;padding-right: 0.8rem">'s</span><!--
+           --><span class="jump-text8" style="color:#e99312">B</span><span class="jump-text9"
+                                                                           style="color:#e99312">l</span><span
+            class="jump-text10" style="color:#e99312">o</span><span class="jump-text11" style="color:#e99312">g</span>
+        </p>
+          {{ partial "relitu/index.html" . }}
+      </div>
+      <!-- 首页欢迎字幅// -->
+        {{ range $index, $element := $pag.Pages }}
+            {{ partial "article-list/default" . }}
+        {{ end }}
+    </section>
+
+    {{- partial "pagination.html" . -}}
+    {{- partial "footer/footer" . -}}
+{{ end }}
+
+{{ define "right-sidebar" }}
+    {{ partial "sidebar/right.html" (dict "Context" . "Scope" "homepage") }}
+{{ end }}
+

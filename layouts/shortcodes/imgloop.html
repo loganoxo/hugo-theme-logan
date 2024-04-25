@@ -1,0 +1,44 @@
+{{ if .Site.Params.enableimgloop }}
+    {{- partial "helper/external" (dict "Context" . "Namespace" "Swiper") -}}
+	<!-- Swiper -->
+	<div class="swiper-container">
+		<div class="swiper-wrapper">
+            {{- range .Params -}}
+                {{$itItems := split (.) ","}}
+                {{- range $itItems -}}
+                    {{- with . -}}
+						<div class="swiper-slide">
+							<img src="{{.}}" alt="">
+						</div>
+                    {{- end -}}
+                {{- end -}}
+
+            {{- end -}}
+		</div>
+		<!-- Add Pagination -->
+		<div class="swiper-pagination"></div>
+	</div>
+
+	<!-- Initialize Swiper -->
+	<script>
+        function SwiperCallback() {
+            new Swiper('.swiper-container', {
+                pagination: '.swiper-pagination',
+                paginationClickable: true,
+                //自动调节高度
+                autoHeight: true,
+                //键盘左右方向键控制
+                keyboardControl: true,
+                //鼠标滑轮控制
+                mousewheelControl: true,
+                //自动切换
+                //autoplay : 5000,
+                //懒加载
+                lazyLoading: true,
+                lazyLoadingInPrevNext: true,
+                //无限循环
+                loop: true,
+            });
+        }
+	</script>
+{{ end }}

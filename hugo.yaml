@@ -1,0 +1,258 @@
+# for git
+baseURL: 'https://xxx.xxx.xxx/' #不同配置文件中只有这里和googleAnalytics不一样
+copyright: 'logan'
+DefaultContentLanguage: 'zh-cn'
+hasCJKLanguage: true
+languageCode: 'zh-cn'
+timeZone: 'Asia/Shanghai'
+paginate: 10 #每页默认数量，默认为10
+#theme: 'hugo-theme-stack'
+disqusShortname: 'logan'
+disableHugoGeneratorInject: true #去除hugo在打包时往html的head注入的Meta标记
+languages:
+  zh-cn:
+    languageName: '中文'
+    # 博客名
+    title: 'Logan的博客'
+    weight: 1
+    params:
+      description: 'Logan的博客,hugo,java,js,mysql,微服务,springboot,vue,nodejs,github'
+
+#permalinks: 不能使用文档超链接
+#  page:
+#    articles: /articles/:year/:month/:slug/
+#    example: /example/:slug/
+#  section:
+#    articles: /articles/
+#    example: /example/
+module:
+  hugoVersion:
+    extended: true
+    min: "0.87.0"
+  mounts:
+    - excludeFiles: favicon-io
+      source: static
+      target: static
+    - excludeFiles: old
+      source: static/favicon-io
+      target: static
+services:
+  googleAnalytics: #google的网站分析平台
+    id: "xxx"
+  rss:
+    limit: 30
+params:
+  nprogress: true #是否显示顶部进度条
+  cdn: local #要启用的cdn,默认为:default,可选local或者其他自定义cdn
+  googleSiteVerification: 'xxx'
+  leftTitle: 'Logan🌀'
+  enableimgloop: true #开启图片轮播
+  sakura: true #开启樱花雨
+  busuanzi:
+    enable: true
+  mainSections:
+    - articles
+    - example
+  featuredImageField: image
+  rssFullContent: true
+  favicon: true
+
+  footer:
+    since: 2020
+    customText: Do you like ?
+
+  dateFormat:
+    published: 2006年1月2日
+    lastUpdated: 2006年1月2日 15:04
+
+  sidebar:
+    compact: false
+    emoji: 🍥
+    subtitle: Starry serenade ✍️
+    avatar:
+      enabled: true
+      local: true
+      # 位于assets/img/下的图片，头像
+      src: /img/avatar-3K.png
+
+  article:
+    math: false
+    toc: true
+    readingTime: true
+    breadcrumb: true #打开面包屑
+    license:
+      enabled: true
+      default: Licensed under CC BY-NC-SA 4.0
+
+  comments:
+    enabled: false
+    provider: waline
+
+    disqusjs:
+      shortname:
+      apiUrl:
+      apiKey:
+      admin:
+      adminLabel:
+
+    utterances:
+      repo:
+      issueTerm: pathname
+      label:
+
+    beaudar:
+      repo:
+      issueTerm: pathname
+      label:
+      theme:
+
+    remark42:
+      host:
+      site:
+      locale:
+
+    vssue:
+      platform:
+      owner:
+      repo:
+      clientId:
+      clientSecret:
+      autoCreateIssue: false
+
+    # Waline client configuration see: https://waline.js.org/en/reference/client/props.html
+    waline:
+      serverURL: https://xxx/
+      lang: zh-cn
+      visitor: #没用
+      avatar:
+      emoji:
+        - https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo
+      requiredMeta:
+        - nick
+      #        - mail
+      locale:
+        admin: Admin
+        placeholder:
+
+    twikoo:
+      envId:
+      region:
+      path:
+      lang:
+    
+    giscus:
+      repo:
+      repoID:
+      category:
+      categoryID:
+      mapping:
+      strict:
+      lightTheme:
+      darkTheme:
+      reactionsEnabled: 1
+      emitMetadata: 0
+      inputPosition:
+      lang:
+    
+    gitalk:
+      owner:
+      admin:
+      repo:
+      clientID:
+      clientSecret:
+    
+    cusdis:
+      host:
+      id:
+
+  widgets:
+    homepage:
+      - type: search
+      - type: archives
+        params:
+          limit: 10
+      - type: categories
+        params:
+          limit: 10
+      - type: tag-cloud
+        params:
+          limit: 10
+    page:
+      - type: toc
+
+  opengraph:
+    twitter:
+      # Your Twitter username
+      site:
+      
+      # Available values: summary, summary_large_image
+      card: summary_large_image
+
+  defaultImage:
+    opengraph:
+      enabled: false
+      local: false
+      src:
+
+  colorScheme:
+    # Display toggle
+    toggle: true
+    
+    # Available values: auto, light, dark
+    default: dark
+
+  imageProcessing:
+    cover:
+      enabled: true
+    content:
+      enabled: true
+
+menu:
+  #  main: [ ]
+
+  social:
+    - identifier: github
+      name: GitHub
+      url: https://github.com/loganoxo
+      params:
+        icon: brand-github
+    - identifier: csdn
+      name: my_csdn
+      url: https://blog.csdn.net/u014229652
+      params:
+        icon: brand-csdn
+    - identifier: twitter
+      name: Twitter
+      url: https://twitter.com
+      params:
+        icon: brand-twitter
+
+related:
+  includeNewer: true
+  threshold: 60
+  toLower: false
+  indices:
+    - name: tags
+      weight: 100
+
+    - name: categories
+      weight: 200
+
+markup:
+  goldmark:
+    renderer:
+      ## Set to true if you have HTML content inside Markdown
+      unsafe: true
+  tableOfContents: #生成从一级标题到六级标题的有序目录
+    endLevel: 6
+    ordered: true
+    startLevel: 1
+  highlight:
+    anchorLineNos: true #将每个行号呈现为HTML锚元素
+    noClasses: false #true:使用内联CSS样式而不是外部CSS文件
+    codeFences: true #代码栏突出显示
+    guessSyntax: true #自动检测代码块语言
+    lineNoStart: 1 #行号从1开始
+    lineNos: true #在每行的开头显示行号
+    lineNumbersInTable: true #HTML表格中显示行号
+    tabWidth: 4

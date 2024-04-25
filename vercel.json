@@ -1,0 +1,9 @@
+{
+  "build": {
+    "env": {
+      "HUGO_VERSION": "0.124.1",
+      "HUGO_ENVIRONMENT": "production",
+      "HUGO_ENV": "production"
+    }
+  }
+}

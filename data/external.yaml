@@ -1,0 +1,125 @@
+Vibrant: #取色
+  - default_src: https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js
+    default_integrity: sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=
+    local_src: /js/vibrant.js
+    type: script
+
+PhotoSwipe: #stack自带的图片灯箱
+  - default_src: https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js
+    default_integrity: sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=
+    local_src: /js/photoswipe.js
+    type: script
+    defer: true
+
+  - default_src: https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js
+    default_integrity: sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=
+    local_src: /js/photoswipe-ui-default.js
+    type: script
+    defer: true
+
+  - default_src: https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css
+    local_src: /css/default-skin/default-skin.css
+    type: style
+    rel: preload
+    add_resource: /css/default-skin/*.{png,svg,gif}
+
+  - default_src: https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css
+    local_src: /css/photoswipe.css
+    type: style
+    rel: preload
+
+KaTeX: #数学公式的支持
+  - default_src: https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css
+    default_integrity: sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV
+    local_src: /css/katex.css
+    type: style
+
+  - default_src: https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js
+    default_integrity: sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8
+    local_src: /js/katex.js
+    type: script
+    defer: true
+
+  - default_src: https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js
+    default_integrity: sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05
+    local_src: /js/contrib/auto-render.js
+    type: script
+    defer: true
+Echarts: #首页热力图
+  - default_src: /js/echarts.js
+    local_src: /js/echarts.js
+    type: script
+BSZ: #不蒜子
+  - default_src: https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js
+    local_src: /js/bsz.pure.mini.min.js
+    type: script
+    async: true
+WenKai: #霞鹜文楷字体
+  - default_src: https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web/lxgwwenkaimonoscreen/result.css
+    local_src: /css/font/result.css
+    type: style
+    rel: preload
+    add_resource: /css/font/*.woff2
+Ribbon: #页面背景彩带
+  - default_src: /js/ribbon.js
+    local_src: /js/ribbon.js
+    type: script
+    async: true
+Yzhanweather: #页面樱花萤火虫
+  - default_src: /js/yzhanweather.js
+    local_src: /js/yzhanweather.js
+    type: script
+    async: true
+Waline: #评论
+  - default_src: https://cdn.jsdelivr.net/npm/@waline/client@3.1.3/dist/waline.min.css
+    local_src: /css/waline.css
+    type: style
+    rel: preload
+  - default_src: https://cdn.jsdelivr.net/npm/@waline/client@3.1.3/dist/waline.umd.min.js
+    local_src: /js/waline.umd.js
+    type: script
+    async: true
+    callback: WalineCallback
+Swiper: #图片轮播
+  - default_src: https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.min.css
+    local_src: /css/swiper.css
+    type: style
+    media: none
+  - default_src: https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/js/swiper.min.js
+    local_src: /js/swiper.js
+    type: script
+    async: true
+    callback: SwiperCallback
+Waterfall: #相册
+  - default_src: https://cdn.jsdelivr.net/npm/waterfall.js@1.0.2/waterfall.min.js
+    local_src: /js/waterfall.js
+    cloudflare_src: https://cdnjs.cloudflare.com/ajax/libs/waterfall.js/1.0.2/waterfall.min.js #文档说只有1.0.2可以正常使用
+    type: script
+    defer: true
+    callback: WaterfallCallback
+  - default_src: /js/imgStatus.js # https://cdn.jsdelivr.net/npm/imgstatus@0.1.1/imgStatus.min.js
+    local_src: /js/imgStatus.js
+    type: script
+    defer: true
+    callback: ImgStatusCallback
+  - default_src: https://cdn.jsdelivr.net/gh/tokinx/ViewImage/view-image.min.js
+    local_src: /js/view-image.js
+    type: script
+    defer: true
+    callback: ViewImageCallback
+
+Nprogress: #进度条
+#  - default_src: https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css
+#    local_src: /css/nprogress.css
+#    type: style # 用自定义的css
+  - default_src: https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js
+    local_src: /js/nprogress.js
+    type: script
+
+Cactus: #评论
+  - default_src: https://latest.cactus.chat/cactus.js
+    integrity:
+    type: script
+  - default_src: https://latest.cactus.chat/style.css
+    integrity:
+    type: style

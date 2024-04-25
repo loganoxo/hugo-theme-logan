@@ -1,0 +1,103 @@
+{{- $List := index .Context.Site.Data.external .Namespace -}}
+{{ $cdn := default "default" .Context.Site.Params.cdn }}
+{{ $cdn = printf "%s_src" $cdn }}
+{{ $real_link := "" }}
+
+{{- with $List -}}
+    {{- range $key, $value := . -}}
+        {{/* 先从设定的cdn_src找，如果没有则找local_src，再没有就是default_src*/}}
+        {{ $integrity := "" }}
+        {{ if eq $cdn "default_src"  }}
+            {{ $integrity = .default_integrity }}
+        {{end}}
+        {{ $cdn_src := index $value $cdn }}
+        {{ if not $cdn_src  }}
+            {{ $cdn_local_src := .local_src }}
+            {{ if $cdn_local_src }}
+                {{ $cdn_src = $cdn_local_src }}
+            {{else}}
+                {{ $cdn_src = .default_src }}
+            {{ end }}
+        {{ end }}
+
+        {{- $real_link = $cdn_src -}}
+
+        {{/* 添加额外资源 */}}
+        {{- if and (.add_resource) (or (eq .type "script") (eq .type "style")) -}}
+            {{- range resources.Match .add_resource -}}
+                {{- .Publish -}}
+            {{- end -}}
+        {{- end -}}
+
+        {{/* 从assets目录找js，并且build和缩小和在文件后加hash字符串 */}}
+        {{- if eq .type "script" -}}
+            {{ with resources.Get $cdn_src  }}
+                {{ if or (hugo.IsDevelopment) (strings.HasSuffix $cdn_src "min.js") }}
+                    {{ with . }}
+                        {{- $real_link = .RelPermalink -}}
+                    {{ end }}
+                {{ else }}
+                    {{ $opts := dict "minify" true "inject" true }}
+                    {{ with . | minify | fingerprint }}
+                        {{- $real_link = .RelPermalink -}}
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{- else if eq .type "style" -}}
+            {{ with resources.Get $cdn_src  }}
+                {{ if or (hugo.IsDevelopment) (strings.HasSuffix $cdn_src "min.css") }}
+                    {{- $real_link = .RelPermalink -}}
+                {{ else }}
+                    {{ with . | minify | fingerprint }}
+                        {{- $real_link = .RelPermalink -}}
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{- end -}}
+
+        {{/* 生成标签 */}}
+        {{- if eq .type "script" -}}
+			<script
+					src="{{ $real_link }}"
+                    {{- with $integrity -}}
+						integrity="{{ . }}"
+                    {{- end -}}
+					crossorigin="anonymous"
+                    {{ if .defer }}defer{{ end }}
+                    {{ if .async }}async{{ end }}
+			>
+			</script>
+
+            {{- $callback_real := .callback -}}
+            {{- if and (or (.async) (.defer) ) ($callback_real) -}}
+				<script>
+                    loadScript( {{- $real_link -}} , {{- $callback_real -}} )
+				</script>
+            {{- end -}}
+
+        {{- else if eq .type "style" -}}
+			<link
+                    {{ if eq .rel "preload" }}
+						rel="preload"
+						as="style"
+						onload="this.rel='stylesheet'"
+                    {{- else -}}
+						rel="stylesheet"
+                    {{- end -}}
+					href="{{ $real_link }}"
+                    {{- with $integrity -}}
+						integrity="{{ . }}"
+                    {{- end -}}
+                    {{- if eq .media "none" -}}
+						media="none"
+						onload="this.media='all'"
+                    {{- end -}}
+					crossorigin="anonymous"
+			>
+        {{- else -}}
+            {{- errorf "Error: unknown external resource type: %s" .type -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- errorf "Error: external resource '%s' is not found" .Namespace -}}
+{{- end -}}

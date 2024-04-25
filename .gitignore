@@ -1,0 +1,8 @@
+.DS_Store
+/.idea/
+/.history/
+__pycache__
+public
+resources
+.hugo_build.lock
+assets/jsconfig.json

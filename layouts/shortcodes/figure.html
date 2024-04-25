@@ -1,0 +1,83 @@
+{{- $Srcset := "" -}}
+{{- $galleryImage := false -}}
+{{- $u := urls.Parse (.Get "src") -}}
+{{- $src := $u.String -}}
+{{- $image := "" }}
+{{- $Width := 0 -}}
+{{- $Height := 0 -}}
+{{- if not $u.IsAbs -}}
+    {{- $image = .Page.Resources.Get $u.Path }}
+    {{- if  $image -}}
+        {{- $src = $image.RelPermalink -}}
+        {{- $galleryImage = true -}}
+    {{- else -}}
+        {{- $image = resources.Get $u.Path }}
+        {{- if  $image -}}
+            {{- $src = $image.RelPermalink -}}
+            {{- $galleryImage = true -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- if and ($image) ($galleryImage) -}}
+    {{- if (default true .Page.Site.Params.imageProcessing.content.enabled) -}}
+        {{- $Width = $image.Width -}}
+        {{- $Height = $image.Height -}}
+        {{- $small := $image.Resize `480x` -}}
+        {{- $big := $image.Resize `1024x` -}}
+        {{- $Srcset = printf `%s 480w, %s 1024w` $small.RelPermalink $big.RelPermalink -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if and ($image) ($galleryImage) ((default true .Page.Site.Params.imageProcessing.content.enabled)) -}}
+<figure class="gallery-image" style="flex-grow: {{ div (mul $image.Width 100) $image.Height }};
+  flex-basis: {{ div (mul $image.Width 240) $image.Height }}px;">
+    {{- else -}}
+  <figure{{ with .Get "class" }} class="{{ . }}"{{ end }}>
+      {{- end -}}
+
+      {{- if and ($image) ($galleryImage) ((default true .Page.Site.Params.imageProcessing.content.enabled)) -}}
+    <a style="display: inline-block;" href="{{ $src }}" target="_blank">
+        {{- else -}}
+    {{- if .Get "link" -}}
+      <a style="display: inline-block;"
+         href="{{ .Get "link" }}"{{ with .Get "target" }} target="{{ . }}"{{ end }}{{ with .Get "rel" }} rel="{{ . }}"{{ end }}>
+          {{- end -}}
+          {{- end -}}
+
+        <img src="{{ $src }}"
+                {{- if or (.Get "alt") (.Get "caption") }}
+                  alt="{{ with .Get "alt" }}{{ . }}{{ else }}{{ .Get "caption" | markdownify| plainify }}{{ end }}"
+                {{- end -}}
+                {{ with $Width }}width="{{ . }}"{{ end }}
+                {{ with $Height }}height="{{ . }}"{{ end }}
+                {{- with .Get "height" }} style="height: {{ . }} ! important" {{ end -}}
+                {{- with .Get "width" }} style="max-width: {{ . }} " {{ end -}}
+                {{- with .Get "loading" }} loading="{{ . }}"{{ end -}}
+                {{ with $Srcset }}srcset="{{ . }}"{{ end }}
+                {{ if $galleryImage }}
+                  class="gallery-image"
+                  data-flex-grow="{{ div (mul $image.Width 100) $image.Height }}"
+                  data-flex-basis="{{ div (mul $image.Width 240) $image.Height }}px"
+                {{ end }}
+        ><!-- Closing img tag -->
+          {{- if or (.Get "link" ) ( and ($image) ($galleryImage) ((default true .Page.Site.Params.imageProcessing.content.enabled))  ) }}
+      </a>
+        {{ end -}}
+
+
+        {{- if or (or (.Get "title") (.Get "caption")) (.Get "attr") -}}
+          <figcaption>
+              {{ with (.Get "title") -}}
+                <h4>{{ . }}</h4>
+              {{- end -}}
+              {{- if or (.Get "caption") (.Get "attr") -}}<p>
+                  {{- .Get "caption" | markdownify -}}
+                  {{- with .Get "attrlink" }}
+                <a href="{{ . }}">
+                    {{- end -}}
+                    {{- .Get "attr" | markdownify -}}
+                    {{- if .Get "attrlink" }}</a>{{ end }}</p>
+              {{- end }}
+          </figcaption>
+        {{- end }}
+  </figure>

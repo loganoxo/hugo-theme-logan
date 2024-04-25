@@ -1,0 +1,70 @@
+html {
+  font-size: 62.5%;
+  overflow-y: scroll;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--body-background);
+  margin: 0;
+  font-family: var(--base-font-family);
+  font-size: 1.6rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 这里写只在 Chrome 和 Safari 中生效的样式 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  ::-webkit-scrollbar {
+    width: 8px; /* 垂直滚动条的宽度 */
+    height: 8px; /* 水平滚动条的宽度 */
+  }
+
+  /* 滚动条轨道 */
+  ::-webkit-scrollbar-track {
+    background-color: transparent; /* 轨道背景色 */
+    border-radius: 20px;
+  }
+
+  /* 滚动条里面可以拖动的那个滑块 */
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 20px; /* 滑块圆角 */
+  }
+  .breadcrumb::-webkit-scrollbar-thumb {
+    background-color: #028047;
+    border-radius: 20px; /* 滑块圆角 */
+    [data-scheme="light"] & {
+      background-image: linear-gradient(to right, #f5f5fa 0%, #cbeeee 30%, #ae8b9c 100%);
+    }
+  }
+
+  .breadcrumb::-webkit-scrollbar-thumb:hover {
+    background-color: #08ecae; /* 鼠标悬停时的滑块颜色 */
+    [data-scheme="light"] & {
+      background-image: linear-gradient(45deg, #f1dffa 0%, #0166e1 100%);
+    }
+  }
+
+  /* 鼠标悬停时的滚动条手柄 */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* 鼠标悬停时的滑块颜色 */
+  }
+
+  /* 滚动条按钮（向上和向下箭头） */
+  ::-webkit-scrollbar-button {
+    display: none; /* 隐藏滚动条按钮 */
+  }
+}
+
+/* 这里写只在 Firefox 中生效的样式 */
+@-moz-document url-prefix() {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+}
+

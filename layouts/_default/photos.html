@@ -1,0 +1,250 @@
+{{ define "main" }}
+    {{- partial "helper/external" (dict "Context" . "Namespace" "Waterfall") -}}
+
+	<div class="button-group">
+		<button class="filter-button" data-category="-">&nbsp;All&nbsp;</button>
+		<button class="filter-button" data-category="日常">#日常</button>
+		<button class="filter-button" data-category="风景">#风景</button>
+		<button class="filter-button" data-category="动物">#动物</button>
+		<button class="filter-button" data-category="人物">#人物</button>
+	</div>
+	<div class="gallery-photos page">
+        {{ range (sort (readDir "./static/photos") "Name" "desc")}}
+            {{ if ( .Name | findRE "\\.(gif|jpg|jpeg|tiff|png|bmp|webp|avif|jxl)") }}
+				<div class="gallery-photo">
+					<img class="photo-img" loading='lazy' decoding="async" src="/photos/{{ .Name }}" alt="{{ .Name }}"/>
+					<span class="photo-title">{{ .Name | replaceRE "(.*)[.].*" "$1"}}</span>
+				</div>
+            {{ end }}
+        {{ end }}
+	</div>
+
+	<style>
+        .gallery-photos {
+            width: 100%;
+        }
+
+        .gallery-photo {
+            width: 24.9%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .gallery-photo img {
+            display: block;
+            width: 100%;
+            border-radius: 20px;
+            padding: 10px;
+            cursor: pointer;
+            opacity: 0;
+            box-shadow: none; /* 阴影 */
+            transition: 2s transform ease-in-out;
+        }
+
+        .gallery-photo span.photo-title {
+            padding: 0 8px;
+            display: none;
+            border-radius: 10px;
+            animation: fadeShow 2s;
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            background-color: #a3dfff;
+            color: #000000;
+            font-size: 1.2rem
+        }
+
+        .gallery-photo:hover span.photo-title {
+            display: block;
+        }
+
+        .gallery-photo img:hover {
+            transform: scale(1.1, 1.1);
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: row;
+            gap: 18px;
+            justify-content: center;
+        }
+
+        .filter-button {
+            padding: 8px 8px;
+            width: auto;
+            background-color: var(--card-background);
+            color: #57bd8f;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-button:hover {
+            color: #5e88f7;
+        }
+
+        .selected-button {
+            background-color: #CCE8CF;
+            color: #000000;
+            /* 选中项的颜色 */
+        }
+
+        @media screen and (max-width: 1280px) {
+            .gallery-photo {
+                width: 33.3%;
+            }
+        }
+
+        @media screen and (max-width: 860px) {
+            .gallery-photo {
+                width: 49.9%;
+            }
+        }
+
+        @media (max-width: 683px) {
+            .photo-title {
+                display: none;
+            }
+        }
+
+        .gallery-photo img.init {
+            mask: none; /* 阴影 */
+            animation: fadeInit 7s;
+            opacity: 1;
+        }
+
+        .gallery-photo img.show {
+            mask: none; /* 阴影 */
+            animation: fadeShow 5s;
+            opacity: 1;
+        }
+
+        .gallery-photo img.blur {
+            animation: fadeBlur 2s;
+            opacity: 0.3;
+            mask: linear-gradient(90deg,transparent, #000000)
+            /*box-shadow: rgb(166, 178, 192) 0px 0px 100px 0px, rgb(179, 150, 19) 0px 0px 200px 0px; !* 添加阴影 *!*/
+        }
+
+        @keyframes fadeShow {
+            from {
+                opacity: 0.3;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeBlur {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes fadeInit {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+
+	</style>
+	<script>
+
+        var ifWaterfallCallback = false;
+        var ifImgStatusCallback = false;
+        var ifViewImageCallback = false;
+
+        function WaterfallCallback() {
+            ifWaterfallCallback = true;
+            if (ifWaterfallCallback && ifImgStatusCallback && ifViewImageCallback) {
+                watter();
+                lo_viewImage();
+            }
+        }
+
+        function ImgStatusCallback() {
+            ifImgStatusCallback = true;
+            if (ifWaterfallCallback && ifImgStatusCallback && ifViewImageCallback) {
+                watter();
+                lo_viewImage();
+            }
+        }
+
+        function ViewImageCallback() {
+            ifViewImageCallback = true;
+            if (ifWaterfallCallback && ifImgStatusCallback && ifViewImageCallback) {
+                watter();
+                lo_viewImage();
+            }
+        }
+
+        function watter() {
+            document.addEventListener('DOMContentLoaded', () => {
+                (new ImgStatus).watch('.photo-img', (imgs) => {
+                    if (imgs.isDone()) {
+                        waterfall('.gallery-photos');
+                        let imgs = document.querySelectorAll('.gallery-photo img');
+                        for (var i = 0; i < imgs.length; i++) {
+                            imgs[i].classList.remove("blur")
+                            imgs[i].classList.add("init")
+                        }
+                    }
+                });
+                window.addEventListener('resize', function () {
+                    waterfall('.gallery-photos');
+                });
+            });
+        }
+
+        function lo_viewImage() {
+            window.ViewImage && ViewImage.init('.gallery-photo img')
+            document.addEventListener('DOMContentLoaded', () => {
+                const filterButtons = document.querySelectorAll('.filter-button');
+                const imgs = document.querySelectorAll('.gallery-photo img');
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const category = button.getAttribute('data-category');
+                        if (category === "-") {
+                            imgs.forEach(img => {
+                                if (img.style.opacity !== 1 && img.classList.contains("blur")) {
+                                    img.classList.add("show")
+                                    img.classList.remove("blur")
+                                }
+                            });
+                        } else {
+                            // 显示符合特定词语的照片
+                            imgs.forEach(img => {
+                                const imageName = img.getAttribute('alt');
+                                if (imageName.includes(category)) {
+                                    if (img.style.opacity !== 1 && img.classList.contains("blur")) {
+                                        img.classList.add("show")
+                                        img.classList.remove("blur")
+                                    }
+                                } else {
+                                    img.classList.remove("show")
+                                    img.classList.add("blur")
+                                }
+                            });
+                        }
+                        // 移除所有按钮的选中状态
+                        filterButtons.forEach(btn => {
+                            btn.classList.remove('selected-button');
+                        });
+                        // 将当前点击的按钮标记为选中状态
+                        button.classList.add('selected-button');
+                    });
+                });
+            });
+        }
+
+	</script>
+{{ end }}

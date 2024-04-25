@@ -1,0 +1,8 @@
+{{ $title := .Get "title" }} {{ $detail := .Get "detail" }}
+<article class="shortcode-card">
+  <a href="https://github.com/{{ $title }}" target="_blank" rel="noopener">
+    <header>
+      <img alt="{{ $title }}" src="https://opengraph.githubassets.com/1/{{ $title }}" />
+    </header>
+  </a>
+</article>
